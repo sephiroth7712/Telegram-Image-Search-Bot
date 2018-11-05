@@ -21,8 +21,8 @@ app.post('/new-message', function(req, res) {
     return res.end()
   }
 
-  // If we've gotten this far, it means that we have received a message containing the word "marco".
-  // Respond by hitting the telegram bot API and responding to the approprite chat_id with the word "Polo!!"
+  // If we've gotten this far, it means that we have received a message containing the word "hi.
+  // Respond by hitting the telegram bot API and responding to the approprite chat_id with the word "Please die <telegram name>!"
   // Remember to use your own API toked instead of the one below  "https://api.telegram.org/bot<your_api_token>/sendMessage"
   axios
     .post(
