@@ -1,25 +1,29 @@
 {
-  "name": "hi_hello_bot",
+  "name": "hi-hello-bot",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Starter pack for running telegram bot on the Heroku using Node.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon index.js",
+    "switch_to_dev": "export $(cat .env | xargs) && wget --spider https://api.telegram.org/bot$TOKEN/setWebhook?url= --delete-after && node index.js"
   },
+  "author": "Volodymyr Lut",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.13.4",
+    "node-telegram-bot-api": "^0.30.0",
+    "nodemon": "^1.18.6"
+  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sephiroth7712/hi_hello_bot.git"
   },
-  "author": "sephiroth7712",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/sephiroth7712/hi_hello_bot/issues"
   },
-  "homepage": "https://github.com/sephiroth7712/hi_hello_bot#readme",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4"
-  }
+  "homepage": "https://github.com/sephiroth7712/hi_hello_bot#readme"
 }
