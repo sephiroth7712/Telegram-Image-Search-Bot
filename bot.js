@@ -14,7 +14,8 @@ else {
 console.log('Bot server started in the ' + process.env.NODE_ENV + ' mode');
 
 bot.on('message', (msg) => {
-  console.log('message recieved')
+  console.log('message recieved');
+  console.log(msg);
   if(msg.text.toLowerCase()=='hi'){
     const name = msg.from.first_name;
     bot.sendMessage(msg.chat.id, 'Hello, ' + name + '!').then(() => {
