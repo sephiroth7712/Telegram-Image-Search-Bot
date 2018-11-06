@@ -1,15 +1,9 @@
 const token = process.env.TOKEN;
 const request = require('request');
 const Bot = require('node-telegram-bot-api');
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
 
 var https = require('https');
 require('dotenv').config();
-//var imageSearch = require('node-google-image-search');
-
-
-
 
 let bot;
 
@@ -32,25 +26,7 @@ bot.onText(/^\/imageof (.+)$/, (msg, props) => {
   console.log('message request = ');
   var searchTerm=msg.text.toString().slice(9);
   console.log(searchTerm);
-  /*requestString='https://unsplash.com/search/photos/'+searchTerm;
-    request(requestString, function (error, response) { // Get the search results of bing
-        var html = new JSDOM(response.body); // Parse the response
-        var images = html.window.document.getElementsByClassName('_2zEKz'); // Get all images - in this case by class name, otherwise we would get profile pictures too
-        var sources = []; // Array to pick random url from
-        for (var i = 0; i < images.length; i++) { // Loop through all images and push only valid url to the array
-            if (images[i].src.includes('https')) {
-                sources.push(images[i].src);
-            }
-        }
-        // Check if the array containing the url has any values
-        if (typeof sources[0] !== "undefined") {
-            bot.sendPhoto(msg.chat.id, sources[Math.floor(Math.random() * sources.length)]); // Random url as parmeter
-        } else {
-            bot.sendMessage(msg.chat.id, "⚠️ Sorry, I couldn't find any image for "+searchTerm+". ⚠️");
-        }
-    });*/
-    var results = getImageSearchResults(searchTerm, callback, 0, 5,msg.chat.id);
-    //console.log(results[0].link);
+  var results = getImageSearchResults(searchTerm, callback, 0, 5,msg.chat.id);
 });
 
 function callback(results,id) {
@@ -109,15 +85,10 @@ function getImageSearchResults(searchTerm, callback, start, num,id) {
     response.on('end', function () {
       var data = JSON.parse(result);
       var resultsArray = [];
-        // check for usage limits (contributed by @ryanmete)
-        // This handles the exception thrown when a user's Google CSE quota has been exceeded for the day.
-        // Google CSE returns a JSON object with a field called "error" if quota is exceed.
       if(data.error && data.error.errors) {
         resultsArray.push(data.error.errors[0]);
-        // returns the JSON formatted error message in the callback
         callback(resultsArray,id);
       } else if(data.items) {
-        // search returned results
         data.items.forEach(function (item) {
           resultsArray.push(item);
         });
