@@ -3,7 +3,6 @@ const request = require('request');
 const Bot = require('node-telegram-bot-api');
 
 var https = require('https');
-require('dotenv').config();
 
 let bot;
 
@@ -101,4 +100,3 @@ function getImageSearchResults(searchTerm, callback, start, num,id) {
 }
 
 module.exports = bot;
-module.exports = getImageSearchResults;
