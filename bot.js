@@ -27,6 +27,8 @@ bot.onText(/^\/imageof (.+)$/, (msg, props) => {
 });
 
 function callback(results,id,msgid) {
+
+  if(results.length>0){
     var url=results[Math.floor(Math.random()*results.length)];
     var count=(url.link.match(/www/g)|| []).length;
     if(url.image.contextLink.includes('facebook')||url.image.contextLink.includes('youtube')){
@@ -44,7 +46,10 @@ function callback(results,id,msgid) {
     } catch(error) {
       console.error(error)
     }
-
+  }
+  else{
+    bot.sendMessage(id,'Image not found',{reply_to_message_id:msgid});
+  }
 }
 
 function nthIndex(str, pat, n){
