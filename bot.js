@@ -23,10 +23,23 @@ bot.onText(/\/start/, (msg) => {
 
 bot.onText(/^\/imageof (.+)$/, (msg, props) => {
   var searchTerm=msg.text.toString().slice(9);
-  var results = getImageSearchResults(searchTerm, callback, 0, 10,msg.chat.id,msg.message_id);
+  var temp=string_to_array(searchTerm);
+  var gsr='https://www.google.co.in/search?q='+temp[0];
+  not=temp.length;
+  if(not>1){
+    for(var i=1;i<not;i++){
+      gsr=gsr+'+'+temp[i];
+    }
+  }
+  gsr+='&tbm=isch&source=lnms&sa=X&ved=0ahUKEwjurPut1cLeAhWDF3IKHT1JDm0Q_AUICygC&biw=1853&bih=953&dpr=1'
+  var results = getImageSearchResults(searchTerm, callback, 0, 10,msg.chat.id,msg.message_id,gsr);
 });
 
-function callback(results,id,msgid) {
+string_to_array = function (str) {
+     return str.trim().split(" ");
+};
+
+function callback(results,id,msgid,gsr) {
 
   if(results.length>0){
     var url=results[Math.floor(Math.random()*results.length)];
@@ -42,7 +55,7 @@ function callback(results,id,msgid) {
       url=url.link;
     }
     try{
-      bot.sendPhoto(id,url,{reply_to_message_id:msgid});
+      bot.sendPhoto(id,url,{parse_mode:'Markdown',caption:'[Google Image Search Results]('+gsr+')', reply_to_message_id:msgid});
     } catch(error) {
       console.error(error)
     }
@@ -80,7 +93,7 @@ bot.on('message', (msg) => {
   }
 });
 
-function getImageSearchResults(searchTerm, callback, start, num,id,msgid) {
+function getImageSearchResults(searchTerm, callback, start, num,id,msgid,gsr) {
   start = start < 0 || start > 90 || typeof(start) === 'undefined' ? 0 : start;
   num = num < 1 || num > 10 || typeof(num) === 'undefined' ? 10 : num;
 
@@ -112,14 +125,14 @@ function getImageSearchResults(searchTerm, callback, start, num,id,msgid) {
       var resultsArray = [];
       if(data.error && data.error.errors) {
         resultsArray.push(data.error.errors[0]);
-        callback(resultsArray,id,msgid);
+        callback(resultsArray,id,msgid,gsr);
       } else if(data.items) {
         data.items.forEach(function (item) {
           resultsArray.push(item);
         });
-        callback(resultsArray,id,msgid);
+        callback(resultsArray,id,msgid,gsr);
       } else {
-        callback([],id,msgid);
+        callback([],id,msgid,gsr);
       }
     });
   });
