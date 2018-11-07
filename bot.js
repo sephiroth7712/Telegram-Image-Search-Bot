@@ -22,9 +22,7 @@ bot.onText(/\/start/, (msg) => {
 
 
 bot.onText(/^\/imageof (.+)$/, (msg, props) => {
-  console.log('message request = ');
   var searchTerm=msg.text.toString().slice(9);
-  console.log(searchTerm);
   var results = getImageSearchResults(searchTerm, callback, 0, 10,msg.chat.id,msg.message_id);
 });
 
@@ -61,7 +59,6 @@ function nthIndex(str, pat, n){
 
 
 bot.on('message', (msg) => {
-  console.log(msg);
   var hi="hi";
   var bye = "bye";
   var nigger = ['nigga','nigger','nibba'];
