@@ -25,36 +25,63 @@ bot.onText(/^\/imageof (.+)$/, (msg, props) => {
   console.log('message request = ');
   var searchTerm=msg.text.toString().slice(9);
   console.log(searchTerm);
-  var results = getImageSearchResults(searchTerm, callback, 0, 5,msg.chat.id);
+  var results = getImageSearchResults(searchTerm, callback, 0, 10,msg.chat.id,msg.message_id);
 });
 
-function callback(results,id) {
-    url=results[0].link;
-    bot.sendPhoto(id,url);
+function callback(results,id,msgid) {
+    var url=results[Math.floor(Math.random()*results.length)];
+    var count=(url.link.match(/www/g)|| []).length;
+    if(url.image.contextLink.includes('facebook')||url.image.contextLink.includes('youtube')){
+      url=results[0].image.thumbnailLink;
+    }
+    else if(count>=2){
+      var index=nthIndex(url.link,'www',2);
+      url='https://'+url.link.toString().slice(index);
+    }
+    else{
+      url=url.link;
+    }
+    try{
+      bot.sendPhoto(id,url,{reply_to_message_id:msgid});
+    } catch(error) {
+      console.error(error)
+    }
+
 }
 
+function nthIndex(str, pat, n){
+    var L= str.length, i= -1;
+    while(n-- && i++<L){
+        i= str.indexOf(pat, i);
+        if (i < 0) break;
+    }
+    return i;
+}
+
+
+
 bot.on('message', (msg) => {
-  //console.log(msg);
+  console.log(msg);
   var hi="hi";
   var bye = "bye";
   var nigger = ['nigga','nigger','nibba'];
-  if(msg.text.toString().toLowerCase().indexOf(hi)===0){
+  if(msg.text.toString().toLowerCase().indexOf(hi)===0||msg.text.toString().toLowerCase().indexOf('hey')==0){
     const name = msg.from.first_name;
     const username = msg.from.username;
     const reply='Hello, ' + name + ' (@'+username+')!';
-    bot.sendMessage(msg.chat.id, reply).then(() => {
+    bot.sendMessage(msg.chat.id, reply,{reply_to_message_id:msg.message_id}).then(() => {
       // reply sent!
     });
   }
   if (msg.text.toString().toLowerCase().includes(bye)) {
-    bot.sendMessage(msg.chat.id, "Die Nigger");
+    bot.sendMessage(msg.chat.id,"Die Nigger",{reply_to_message_id:msg.message_id});
   }
   if(nigger.includes(msg.text.toString().toLowerCase())){
-    bot.sendMessage(msg.chat.id, "Niggers should die");
+    bot.sendMessage(msg.chat.id, "Niggers should die",{reply_to_message_id:msg.message_id});
   }
 });
 
-function getImageSearchResults(searchTerm, callback, start, num,id) {
+function getImageSearchResults(searchTerm, callback, start, num,id,msgid) {
   start = start < 0 || start > 90 || typeof(start) === 'undefined' ? 0 : start;
   num = num < 1 || num > 10 || typeof(num) === 'undefined' ? 10 : num;
 
@@ -86,14 +113,14 @@ function getImageSearchResults(searchTerm, callback, start, num,id) {
       var resultsArray = [];
       if(data.error && data.error.errors) {
         resultsArray.push(data.error.errors[0]);
-        callback(resultsArray,id);
+        callback(resultsArray,id,msgid);
       } else if(data.items) {
         data.items.forEach(function (item) {
           resultsArray.push(item);
         });
-        callback(resultsArray,id);
+        callback(resultsArray,id,msgid);
       } else {
-        callback([],id);
+        callback([],id,msgid);
       }
     });
   });
