@@ -61,20 +61,17 @@ function nthIndex(str, pat, n){
 bot.on('message', (msg) => {
   var hi="hi";
   var bye = "bye";
-  var nigger = ['nigga','nigger','nibba'];
-  if(msg.text.toString().toLowerCase().indexOf(hi)===0||msg.text.toString().toLowerCase().indexOf('hey')==0){
-    const name = msg.from.first_name;
-    const username = msg.from.username;
+  const name = msg.from.first_name;
+  const username = msg.from.username;
+  if(msg.text.toString().toLowerCase().indexOf(hi)===0||msg.text.toString().toLowerCase().indexOf('hey')==0||msg.text.toString().toLowerCase().indexOf('hello')==0){
+
     const reply='Hello, ' + name + ' (@'+username+')!';
     bot.sendMessage(msg.chat.id, reply,{reply_to_message_id:msg.message_id}).then(() => {
       // reply sent!
     });
   }
   if (msg.text.toString().toLowerCase().includes(bye)) {
-    bot.sendMessage(msg.chat.id,"Die Nigger",{reply_to_message_id:msg.message_id});
-  }
-  if(nigger.includes(msg.text.toString().toLowerCase())){
-    bot.sendMessage(msg.chat.id, "Niggers should die",{reply_to_message_id:msg.message_id});
+    bot.sendMessage(msg.chat.id,"Goodbye, "+name+' (@'+username+')!',{reply_to_message_id:msg.message_id});
   }
 });
 
