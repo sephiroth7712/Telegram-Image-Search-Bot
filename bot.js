@@ -43,6 +43,9 @@ function callback(results,id,msgid,gsr) {
 
   if(results.length>0){
     var url=results[Math.floor(Math.random()*results.length)];
+    if(url.link==undefined){
+      bot.sendMessage(id,'Error',{reply_to_message_id:msgid});
+    }
     var count=(url.link.match(/www/g)|| []).length;
     if(url.image.contextLink.includes('facebook')||url.image.contextLink.includes('youtube')){
       url=results[0].image.thumbnailLink;
