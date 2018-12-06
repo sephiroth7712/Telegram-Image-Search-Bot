@@ -16,39 +16,31 @@ else {
 
 
 console.log('Bot server started in the ' + process.env.NODE_ENV + ' mode');
+
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, "Welcome!");
 });
 
-
-bot.onText(/^\/imageof (.+)$/, (msg, props) => {
-  var searchTerm=msg.text.toString().slice(9);
-  var temp=string_to_array(searchTerm);
-  var gsr='https://www.google.co.in/search?q='+temp[0];
-  not=temp.length;
-  if(not>1){
-    for(var i=1;i<not;i++){
-      gsr=gsr+'+'+temp[i];
-    }
-  }
-  gsr+='&tbm=isch&source=lnms&sa=X&ved=0ahUKEwjurPut1cLeAhWDF3IKHT1JDm0Q_AUICygC&biw=1853&bih=953&dpr=1'
-  var results = getImageSearchResults(searchTerm, callback, 0, 10,msg.chat.id,msg.message_id,gsr);
+bot.onText(/\/imageof/,(msg) => {
+  bot.sendMessage(msg.chat.id,"Enter Search Term for Image",{reply_to_message_id:msg.message_id,reply_markup:{"force_reply":true}});
 });
+
 
 string_to_array = function (str) {
      return str.trim().split(" ");
 };
 
 function callback(results,id,msgid,gsr) {
-
+  var temp=Math.floor(Math.random()*results.length);
   if(results.length>0){
-    var url=results[Math.floor(Math.random()*results.length)];
+    var url=results[temp];
+    // console.log(url);
     if(url.link==undefined){
       bot.sendMessage(id,'Error',{reply_to_message_id:msgid});
     }
     var count=(url.link.match(/www/g)|| []).length;
-    if(url.image.contextLink.includes('facebook')||url.image.contextLink.includes('youtube')){
-      url=results[0].image.thumbnailLink;
+    if(url.image.contextLink.includes('facebook')||url.image.contextLink.includes('youtube')||url.image.contextLink.includes('twitter')){
+      url=results[temp].image.thumbnailLink;
     }
     else if(count>=2){
       var index=nthIndex(url.link,'www',2);
@@ -91,9 +83,24 @@ bot.on('message', (msg) => {
       // reply sent!
     });
   }
-  if (msg.text.toString().toLowerCase().includes(bye)) {
+  else if (msg.text.toString().toLowerCase().includes(bye)) {
     bot.sendMessage(msg.chat.id,"Goodbye, "+name+' (@'+username+')!',{reply_to_message_id:msg.message_id});
   }
+  if(msg.reply_to_message!=undefined){
+    if((msg.reply_to_message.from.id==791119811)&&(msg.reply_to_message.text.toString().toLowerCase()=='enter search term for image')){
+    var searchTerm=msg.text.toString();
+    var temp=string_to_array(searchTerm);
+    var gsr='https://www.google.co.in/search?q='+temp[0];
+    not=temp.length;
+    if(not>1){
+      for(var i=1;i<not;i++){
+        gsr=gsr+'+'+temp[i];
+      }
+    }
+    gsr+='&tbm=isch&source=lnms&sa=X&ved=0ahUKEwjurPut1cLeAhWDF3IKHT1JDm0Q_AUICygC&biw=1853&bih=953&dpr=1'
+    var results = getImageSearchResults(searchTerm, callback, 0, 10,msg.chat.id,msg.message_id,gsr);
+  }}
+
 });
 
 function getImageSearchResults(searchTerm, callback, start, num,id,msgid,gsr) {
